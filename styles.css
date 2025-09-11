@@ -1,0 +1,9 @@
+html, body {
+    /* overflow: hidden; */
+    image-rendering: pixelated;
+}
+
+canvas {
+    width: 100%;
+    background: black;
+}
