@@ -6,6 +6,7 @@ import { GameLoop } from './src/GameLoop.js';
 import { Input } from './src/Input.js';
 import { Character } from './src/Character.js';
 import { DynamicLayer } from './src/DynamicLayer.js';
+import { Collisions } from './src/Collisions.js';
 
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- Load map ---
     gameMap = new GameMap("assets/map/library.json", "assets/map/tiled/tileset.png", 24);
     await gameMap.load();
+    const collisions = new Collisions(gameMap.getCollisionObjects());
 
     // --- Initialize sprites ---
     const librarianSprite = new Sprite({
@@ -38,14 +40,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     librarian = new Character(librarianSprite, new Vector2(365, 265), {xOffset: 16, yOffset: 48, width: 32, height: 16});
-    player = new Character(playerSprite, new Vector2(209, 305), {xOffset: 16, yOffset: 48, width: 32, height: 16});
+    player = new Character(playerSprite, new Vector2(209, 305), {xOffset: 24, yOffset: 48, width: 16, height: 8});
 
     // --- Initialize input ---
     input = new Input();
 
      // --- Define update function ---
     const update = () => { 
-        player.update(input);
+        player.update(input, collisions);
     };
     
     // --- Get dynamic objects from GameMap ---

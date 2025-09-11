@@ -1,37 +1,70 @@
-// Collisions.js
+import { rectIntersect, pointInPolygon, lineIntersect } from "./CollisionUtils.js";
+
 export class Collisions {
-    constructor(rawObjects) {
-        // parse raw objects into a standard format
-        this.objects = rawObjects
-            .map(obj => {
-                if (obj.width && obj.height) {
-                    return { type: 'rect', x: obj.x, y: obj.y, width: obj.width, height: obj.height };
-                } else if (obj.polygon) {
-                    const points = obj.polygon.map(p => ({ x: obj.x + p.x, y: obj.y + p.y }));
-                    return { type: 'polygon', points };
+    constructor(objects) {
+        this.objects = objects;
+    }
+
+    isBlocked(box) {
+        return this.objects.some(obj => {
+            if (obj.type === "rect") {
+                return rectIntersect(box, obj);
+            }
+            if (obj.type === "polygon") {
+                const corners = [
+                    { x: box.x, y: box.y },
+                    { x: box.x + box.width, y: box.y },
+                    { x: box.x + box.width, y: box.y + box.height },
+                    { x: box.x, y: box.y + box.height }
+                ];
+
+                // 1. Any corner inside poly?
+                if (corners.some(corner =>
+                    pointInPolygon(corner, obj.polygon, obj.x, obj.y)
+                )) return true;
+
+                // 2. Any edge intersection?
+                const polyPoints = obj.polygon.map(p => ({
+                    x: obj.x + p.x,
+                    y: obj.y + p.y
+                }));
+                const boxEdges = [
+                    [corners[0], corners[1]],
+                    [corners[1], corners[2]],
+                    [corners[2], corners[3]],
+                    [corners[3], corners[0]]
+                ];
+
+                for (let i = 0; i < polyPoints.length; i++) {
+                    const a = polyPoints[i];
+                    const b = polyPoints[(i + 1) % polyPoints.length];
+                    for (const [p1, p2] of boxEdges) {
+                        if (lineIntersect(p1, p2, a, b)) return true;
+                    }
                 }
-                return null;
-            })
-            .filter(obj => obj !== null);
+
+                return false;
+            }
+            return false;
+        });
     }
 
-    debugLog() {
-        console.log("Loaded collisions:", this.objects);
-    }
-
-    debugDraw(ctx) {
+    drawDebug(ctx) {
         ctx.save();
         ctx.strokeStyle = "red";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
 
         this.objects.forEach(obj => {
-            if (obj.type === 'rect') {
+            if (obj.type === "rect") {
                 ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
-            } else if (obj.type === 'polygon') {
-                const points = obj.points;
+            }
+            if (obj.type === "polygon") {
                 ctx.beginPath();
-                ctx.moveTo(points[0].x, points[0].y);
-                for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+                const pts = obj.polygon;
+                ctx.moveTo(pts[0].x + obj.x, pts[0].y + obj.y);
+                for (let i = 1; i < pts.length; i++) {
+                    ctx.lineTo(pts[i].x + obj.x, pts[i].y + obj.y);
+                }
                 ctx.closePath();
                 ctx.stroke();
             }
@@ -40,92 +73,3 @@ export class Collisions {
         ctx.restore();
     }
 }
-
-
-
-
-// export class Collisions {
-//     constructor(objects) {
-//         this.rawObjects = rawObjects;
-//         this.collisionObjects = [];
-//     }
-
-    
-//     debugLog() {
-//         console.log("Loaded collisions:", this.rawObjects);
-//     }
-
-//     debugDraw(ctx) {
-//         ctx.save();
-//         ctx.strokeStyle = "red";
-//         ctx.lineWidth = 2;
-
-//         this.rawObjects.forEach(obj => {
-//             if (obj.width && obj.height) {
-//                 ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
-//             } else if (obj.polygon) {
-//                 ctx.beginPath();
-//                 const points = obj.polygon.map(p => ({x: obj.x + p.x, y: obj.y + p.y}));
-//                 ctx.moveTo(points[0].x, points[0].y);
-//                 for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
-//                 ctx.closePath();
-//                 ctx.stroke();
-//             }
-//         });
-
-//         ctx.restore();
-//     }
-// }
-
-
-
-    // parseObject(obj) {
-    //     if (obj.polygon) {
-    //         return {
-    //             type: "polygon",
-    //             points: obj.polygon.map(p => ({
-    //                 x: obj.x + p.x,
-    //                 y: obj.y + p.y
-    //             }))
-    //         };
-    //     }
-    //     if (obj.width && obj.height) {
-    //         return {
-    //             type: "rect",
-    //             x: obj.x,
-    //             y: obj.y,
-    //             width: obj.width,
-    //             height: obj.height
-    //         };
-    //     }
-    //     return null;
-    // }
-
-    // collidesWith(player) {
-    //     for (const obj of this.collisionObjects) {
-    //         if (obj.type === "rect" && rectIntersect(player, obj)) return true;
-    //         if (obj.type === "polygon" && pointInPolygon(player, obj.points)) return true;
-    //     }
-    //     return false;
-    // }
-
-    // debugDraw(ctx) {
-    //     ctx.save();
-    //     ctx.strokeStyle = "red";
-    //     ctx.lineWidth = 2;
-    //     for (const obj of this.collisionObjects) {
-    //         if (obj.type === "rect") {
-    //             ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
-    //         } else if (obj.type === "polygon") {
-    //             ctx.beginPath();
-    //             ctx.moveTo(obj.points[0].x, obj.points[0].y);
-    //             for (let i = 1; i < obj.points.length; i++) {
-    //                 ctx.lineTo(obj.points[i].x, obj.points[i].y);
-    //             }
-    //             ctx.closePath();
-    //             ctx.stroke();
-    //         }
-    //     }
-    //     ctx.restore();
-    // }
-//}

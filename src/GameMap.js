@@ -76,42 +76,6 @@ export class GameMap {
         ctx.drawImage(this.foregroundBuffer, 0, 0);
     }
 
-    // getDynamicData() {
-    //     const dynamicTiles = [];
-        
-    //     // Find all tile layers with a dynamic property
-    //     const dynamicTileLayers = this.mapData.layers.filter(layer =>
-    //         layer.type === "tilelayer" &&
-    //         layer.properties?.some(p => p.name === "Object Name")
-    //     );
-
-    //     // Find all object layers with a dynamic property
-    //     const objectLayers = this.mapData.layers.filter(layer =>
-    //         layer.type === "objectgroup" &&
-    //         layer.properties?.some(p => p.name === "Object Name")
-    //     );
-
-    //     dynamicTileLayers.forEach(tileLayer => {
-    //         const objectName = tileLayer.properties.find(p => p.name === "Object Name").value;
-
-    //         // Find the matching bounding box layer
-    //         const boxLayer = objectLayers.find(objLayer => 
-    //             objLayer.properties.find(p => p.name === "Object Name")?.value === objectName
-    //         );
-
-    //         dynamicTiles.push({
-    //             layerName: tileLayer.name,
-    //             objectName,
-    //             data: tileLayer.data,
-    //             width: tileLayer.width,
-    //             height: tileLayer.height,
-    //             boxes: boxLayer?.objects || []
-    //         });
-    //     });
-
-    //     return dynamicTiles;
-    // }  
-
     getDynamicData() {
         const dynamicLayers = [];
 
@@ -137,5 +101,34 @@ export class GameMap {
         });
 
         return dynamicLayers;
+    }
+
+    getCollisionObjects() {
+        const collisions = [];
+
+        this.mapData.layers.forEach(layer => {
+            if (layer.type === "objectgroup" && layer.name === "Collisions") {
+                layer.objects.forEach(obj => {
+                    if (obj.polygon) {
+                        collisions.push({
+                            type: "polygon",
+                            x: obj.x,
+                            y: obj.y,
+                            polygon: obj.polygon
+                        });
+                    } else {
+                        collisions.push({
+                            type: "rect",
+                            x: obj.x,
+                            y: obj.y,
+                            width: obj.width,
+                            height: obj.height
+                        });
+                    }
+                });
+            }
+        });
+
+        return collisions;
     }
 }
