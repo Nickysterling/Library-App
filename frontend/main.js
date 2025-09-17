@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         gameMap.drawBackground(ctx);
 
         dynamicLayer.draw(ctx);
+        collisions.drawDebug(ctx);
 
         gameMap.drawForeground(ctx);
     };

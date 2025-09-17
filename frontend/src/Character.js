@@ -7,7 +7,7 @@
             this.position = position ?? new Vector2(0, 0);
             this.bbox = bbox;
             this.speed = speed;
-            this.showDebugBox = false;
+            this.showDebugBox = true;
         }
 
         getBoundingBox() {
