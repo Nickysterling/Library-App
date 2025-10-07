@@ -1,0 +1,25 @@
+# IDE / editor
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+target/
+*.class
+*.jar
+*.war
+
+# Config / secrets
+src/main/resources/application.properties
+src/main/resources/application.yml
+.env
+
+# Logs
+*.log
+
+# Maven wrapper cache
+*.mvn/wrapper/maven-wrapper.jar

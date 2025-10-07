@@ -1,12 +1,15 @@
-import { resources } from './src/Resources.js';
-import { GameMap } from "./src/GameMap.js";
-import { Sprite } from './src/Sprite.js';
-import { Vector2 } from './src/Vector2.js';
-import { GameLoop } from './src/GameLoop.js';
-import { Input } from './src/Input.js';
-import { Character } from './src/Character.js';
-import { DynamicLayer } from './src/DynamicLayer.js';
-import { Collisions } from './src/Collisions.js';
+import { GameLoop } from './src/core/GameLoop.js';
+import { GameMap } from "./src/core/GameMap.js";
+import { resources } from './src/core/Resources.js';
+
+import { Character } from './src/entities/Character.js';
+import { Sprite } from './src/entities/Sprite.js';
+
+import { Collisions } from './src/systems/Collisions.js';
+import { DynamicLayer } from './src/systems/DynamicLayer.js';
+import { Input } from './src/systems/Input.js';
+
+import { Vector2 } from './src/utils/Vector2.js';
 
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
@@ -64,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         gameMap.drawBackground(ctx);
 
         dynamicLayer.draw(ctx);
-        collisions.drawDebug(ctx);
+        // collisions.drawDebug(ctx);
 
         gameMap.drawForeground(ctx);
     };

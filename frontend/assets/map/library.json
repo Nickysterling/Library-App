@@ -1595,7 +1595,7 @@
                 {
                  "name":"Object Name",
                  "type":"string",
-                 "value":""
+                 "value":"Bookshelf"
                 }],
          "type":"tilelayer",
          "visible":true,
@@ -1769,13 +1769,13 @@
                  "y":240
                 }, 
                 {
-                 "height":151.9998,
+                 "height":152,
                  "id":39,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":144.063,
+                 "width":151,
                  "x":0,
                  "y":87
                 }, 
@@ -1808,7 +1808,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":24,
+                 "width":27,
                  "x":0,
                  "y":239
                 }, 
@@ -1819,8 +1819,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":120,
-                 "x":216,
+                 "width":126,
+                 "x":210,
                  "y":87
                 }, 
                 {

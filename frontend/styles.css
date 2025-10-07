@@ -1,9 +1,15 @@
 html, body {
     /* overflow: hidden; */
     image-rendering: pixelated;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
-canvas {
+#game-canvas {
     width: 100%;
     background: black;
+   
 }
+
+
